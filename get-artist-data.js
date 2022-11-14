@@ -245,6 +245,7 @@ const getArtDetails = function(artDetails){
                 let postfixIndex = duplicate(element);
                 postfix = '-'+(postfixIndex-1);
             }
+            console.log('art-link'+postfix);
             artDuplicableEle[index].querySelector('input[name="art-link'+postfix+'"]').value = artData.arturl ? artData.arturl : '';
             artDuplicableEle[index].querySelector('input[name="title'+postfix+'"]').value = artData.artTitle ? artData.artTitle : '';
             artDuplicableEle[index].querySelector('textarea[name="description'+postfix+'"]').value = artData.artDesc ? artData.artDesc : '';
@@ -257,7 +258,6 @@ const getArtDetails = function(artDetails){
         let removeBtns = document.querySelectorAll('.remove-art');        
         removeBtns.forEach(e => {
             e.addEventListener('click', () => {
-                console.log('click');
                 e.parentElement.nextElementSibling.remove();
                 e.parentElement.remove();
             }) 
