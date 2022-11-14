@@ -245,6 +245,7 @@ const getArtDetails = function(artDetails){
                 postfix = '-'+(postfixIndex-1);
             }
             console.log('art-link'+postfix);
+            artDuplicableEle = document.querySelectorAll('.art-duplicateable');
             artDuplicableEle[index].querySelector('input[name="art-link'+postfix+'"]').value = artData.arturl ? artData.arturl : '';
             artDuplicableEle[index].querySelector('input[name="title'+postfix+'"]').value = artData.artTitle ? artData.artTitle : '';
             artDuplicableEle[index].querySelector('textarea[name="description'+postfix+'"]').value = artData.artDesc ? artData.artDesc : '';
