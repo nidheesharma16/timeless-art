@@ -43,6 +43,7 @@ function easyHTTP(){
 const btns = document.querySelectorAll('.plus-icon')
 let i = 1;
 
+
 const duplicate = function(btn){
     const duplicateable = btn.parentElement.querySelector('.duplicateable')
     console.log(duplicateable, ' duplicateable');
@@ -381,3 +382,181 @@ const checkSection = function(id){
 
     return item
 }
+
+const updateNoofFiles = function(){
+    document.getElementById('no-of-files').textContent = currentFiles + currentLinks
+}
+
+const showArtDetails = function(urls, files){
+    const block = document.querySelector('.art-details-wrapper')
+    let html = ''
+
+    urls.forEach( (url, i) => {
+        html += `<div class="art-upload-info" data-url='${url}'>
+
+        <a href="#" class="file-deselector w-inline-block">
+        <img class='uploaded-img' src='${url}'>
+        </img>
+        <div>
+        ${files[i].name}</div>
+        <img src="https://uploads-ssl.webflow.com/629e3d15e8ee4837214bee58/634814774357a011e1937be2_Group%2091.svg" loading="lazy" alt="">
+        </a>
+        <div class="col-wrapper"><div class="col-50"><label for="title-2" class="label">Art Title</label><input type="text" class="input w-input" maxlength="256" name="title" data-name="title" placeholder="Art Title" id="title"><label for="description-2" class="label">Art Description</label><textarea placeholder="Art Description" maxlength="5000" id="description" name="description" data-name="field" class="input w-input"></textarea></div><div class="col-50"><div class="unit-wrap"><label for="unit" class="label is--inline">Art Dimensions</label><select id="unit" name="unit" data-name="unit" class="input units w-select"><option value="inches">Inches</option><option value="Cm">Centimeters</option></select></div><div class="div-block"><input type="text" class="input dimension w-input" maxlength="256" name="width" data-name="width" placeholder="Width" id="width"><input type="text" class="input dimension w-input" maxlength="256" name="height" data-name="height" placeholder="Height" id="height"><input type="text" class="input dimension last w-input" maxlength="256" name="depth" data-name="depth" placeholder="Depth" id="depth"></div><label for="art-medium" class="label">Art Medium</label><select id="art-medium" name="art-medium" data-name="art-medium" class="input w-select"><option value="">Please select</option><option value="Oil">Oil</option><option value="Acrylic">Acrylic</option><option value="Mixed Media">Mixed Media</option><option value="Watercolor">Watercolor</option><option value="Encaustic">Encaustic</option><option value="Ink">Ink</option><option value="Tempera">Tempera</option><option value="Spray Paint">Spray Paint</option><option value="Digital">Digital</option><option value="Another option">Pencil</option><option value="Another option">Charcoal</option><option value="Pastels">Pastels</option><option value="Bronze">Bronze</option><option value="Steel">Steel</option><option value="Iron">Iron</option><option value="Precious Metals">Precious Metals</option><option value="Marble">Marble</option><option value="Other Stone">Other Stone</option><option value="Found Materials">Found Materials</option><option value="Glass">Glass</option><option value="Ceramic">Ceramic</option><option value="Paper Mache">Paper Mache</option></select></div></div>        
+        </div>
+        `
+    })
+
+    block.innerHTML += html
+
+    // Remove Art
+    document.querySelectorAll('.file-deselector').forEach( e => {
+        e.addEventListener('click', () => {
+            e.parentElement.remove()
+            currentFiles += -1
+
+            updateNoofFiles()
+        })
+    })
+
+    // Hide previous file input
+    document.querySelectorAll('input[type="file"]').forEach( el => el.style.display = 'none')
+
+    // Add new input
+    var input = document.createElement('input');
+    input.type="file";
+    input.setAttribute('multiple', true)
+
+    block.parentElement.parentElement.parentElement.appendChild(input);
+
+    // Add event listener to new input
+    input.addEventListener("change", event => {
+        fileInputTrigger(event)
+    });
+}
+
+const getArts = function(){
+    let arr = []
+
+    const blocks = document.querySelectorAll('.art-upload-info')
+    const mBlocks = document.querySelectorAll('.art-duplicateable')
+
+    blocks.forEach( block => {
+        const item = {
+            "artTitle": block.querySelector('[data-name="title"]').value,
+            "artDesc": block.querySelector('textarea').value,
+            "arturl": block.getAttribute('data-url'),
+            "artMedium": block.querySelector('#art-medium').value,
+            "artDimensions": {
+                "unit": block.querySelector('#unit').value,
+                "height": block.querySelector('[data-name="height"]').value,
+                "width": block.querySelector('[data-name="width"]').value,
+                "depth": block.querySelector('[data-name="depth"]').value,
+            }
+        }
+
+        arr.push(item)
+    })
+
+    mBlocks.forEach( block => {
+        const inputs = block.querySelectorAll('input')
+
+        if( inputs[0].value != ''){
+
+            const item = {
+                "artTitle": inputs[0].value,
+                "artDesc": block.querySelector('textarea').value,
+                "arturl": block.getAttribute('data-url'),
+                "artMedium": block.querySelector('#art-medium').value,
+                "artDimensions": {
+                    "unit": block.querySelector('#unit').value,
+                    "height": block.querySelector('[data-name="height"]').value,
+                    "width": block.querySelector('[data-name="width"]').value,
+                    "depth": block.querySelector('[data-name="depth"]').value,
+                }
+            }
+    
+            arr.push(item)
+        }
+    })
+
+    return arr
+}
+
+// FILE UPLOAD
+const uploadFile = (files) => {
+    const API_ENDPOINT = "https://api.timelessart.io/api/timelessart/artistfileupload";
+    const request = new XMLHttpRequest();
+    const formData = new FormData();
+  
+    request.open("POST", API_ENDPOINT, true);
+    request.onreadystatechange = () => {
+      if (request.readyState === 4 && request.status === 200) {  
+        const artUrls = JSON.parse(request.responseText).Data
+
+        showArtDetails(artUrls, files)
+      }
+    };
+    
+    for (let i = 0; i < files.length; i++) {
+      // formData.append(files[i].name, files[i])
+      formData.append('files', files[i])
+    }
+    request.send(formData);
+};
+  
+// Select your input type file and store it in a variable
+const fileInput = document.getElementById('file-upload');
+let currentLinks = 0
+
+function fileInputTrigger(event){
+    const files = event.target.files;
+    currentFiles += files.length
+
+    if(currentFiles < 11){
+        uploadFile(files);
+
+        updateNoofFiles()
+    } else{
+        alert('You can only submit a maximum of 10 art pieces')
+        currentFiles = currentFiles - files.length
+    }
+
+}
+
+function addArtWlink(input){
+
+    if(input.value != ''){
+        input.setAttribute('filled', true)
+    } else{
+        input.setAttribute('filled', false)
+    }
+
+    currentLinks = Number(document.querySelectorAll('input[filled="true"]').length)
+
+    if(currentLinks + currentFiles > 10){
+        alert('You can only submit a maximum of 10 art pieces')
+        input.value = ''
+        input.setAttribute('filled', false)
+    }
+
+    updateNoofFiles()
+}
+
+// EVENT LISTENERS
+
+// It will be triggered when a file will be selected
+fileInput.addEventListener("change", event => {
+    fileInputTrigger(event)
+});
+
+document.querySelectorAll('.art-duplicateable').forEach( e => {
+    const art = e.querySelectorAll('input')[0]
+
+    art.addEventListener('change', () => {
+        addArtWlink(art)
+    })
+})
+
+easyNumberSeparator({
+    selector: '.add-commas',
+})
