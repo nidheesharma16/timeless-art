@@ -76,7 +76,6 @@ const getContactInfo = function(contactInfoData){
     document.getElementById('Mailing-address-Line').value = contactInfoData.mailingAddress ? contactInfoData.mailingAddress : '';
     document.getElementById('Mailing-address-Line').value = contactInfoData.shippingAddress ? contactInfoData.shippingAddress : '';
     document.getElementById('Phone-Number').value = contactInfoData.phoneNumber ? contactInfoData.phoneNumber : '';
-    document.getElementById('email').value = contactInfoData.email ? contactInfoData.email : '';
     document.getElementById('Art-Website').value = contactInfoData.artWebsite ? contactInfoData.artWebsite : '';
     document.getElementById('Admin-Contact-Name').value = contactInfoData.administrativeName ? contactInfoData.administrativeName : '';
     document.getElementById('Admin-Contact-Phone').value = contactInfoData.administrativePhone ? contactInfoData.administrativePhone : '';
