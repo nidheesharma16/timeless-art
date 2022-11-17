@@ -236,32 +236,16 @@ const getArtEducation = function(artCompetitionAwards){
 
 const getArtDetails = function(artDetails){
     if(artDetails.length > 0){
-        let postfix = '';
-        artDetails.forEach((artData, index) => {    
-            postfix = '';
-            if(artDetails.length > 1 && index > 0){
-                let element = document.querySelector('#art-details .plus-icon');
-                let postfixIndex = duplicate(element);
-                postfix = '-'+(postfixIndex-1);
-            }
-            console.log('art-link'+postfix);
-            artDuplicableEle = document.querySelectorAll('.art-duplicateable');
-            artDuplicableEle[index].querySelector('input[name="art-link'+postfix+'"]').value = artData.arturl ? artData.arturl : '';
-            artDuplicableEle[index].querySelector('input[name="title'+postfix+'"]').value = artData.artTitle ? artData.artTitle : '';
-            artDuplicableEle[index].querySelector('textarea[name="description'+postfix+'"]').value = artData.artDesc ? artData.artDesc : '';
-            artDuplicableEle[index].querySelector('input[name="height'+postfix+'"]').value = artData.artDimensions && artData.artDimensions.height ? artData.artDimensions.height : '';
-            artDuplicableEle[index].querySelector('input[name="width'+postfix+'"]').value = artData.artDimensions && artData.artDimensions.width ? artData.artDimensions.width : '';
-            artDuplicableEle[index].querySelector('input[name="depth'+postfix+'"]').value = artData.artDimensions && artData.artDimensions.depth ? artData.artDimensions.depth : '';
-            artDuplicableEle[index].querySelector('select[name="unit'+postfix+'"]').value = artData.artDimensions && artData.artDimensions.unit ? artData.artDimensions.unit : '';
-            artDuplicableEle[index].querySelector('select[name="art-medium'+postfix+'"]').value = artData.artMedium ? artData.artMedium : '';
+        artDetails.forEach((artData, index) => { 
+            let artUrl = artData.arturl ? artData.arturl : '';
+            let artTitle = artData.artTitle ? artData.artTitle : '';
+            let artMedium = artData.artMedium ? artData.artMedium : '';
+            let files = [{'name': artTitle}];
+            showArtDetails([artUrl], files, artData);
+            let artUploadInfo = document.querySelectorAll('.art-upload-info');
+            artUploadInfo[index].querySelector('#art-medium option[value="'+artMedium+'"]').setAttribute('selected', 'selected');
         });
-        let removeBtns = document.querySelectorAll('.remove-art');        
-        removeBtns.forEach(e => {
-            e.addEventListener('click', () => {
-                e.parentElement.nextElementSibling.remove();
-                e.parentElement.remove();
-            }) 
-        });
+        updateNoofFiles();
     }
 }
 

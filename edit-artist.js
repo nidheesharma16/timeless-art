@@ -384,12 +384,20 @@ const checkSection = function(id){
 }
 
 const updateNoofFiles = function(){
-    document.getElementById('no-of-files').textContent = currentFiles + currentLinks
+    let artLinkContainer = document.querySelectorAll('#art-details .art-duplicateable');
+    let artUploadContainer = document.querySelectorAll('#art-details .art-upload-info');
+    document.getElementById('no-of-files').textContent = (artLinkContainer.length - 1) + artUploadContainer.length;
 }
 
-const showArtDetails = function(urls, files){
-    const block = document.querySelector('.art-details-wrapper')
-    let html = ''
+const showArtDetails = function(urls, files, artData){
+    const block = document.querySelector('.art-details-wrapper');
+    let html = '';
+    let artTitle = artData && artData.artTitle ? artData.artTitle : '';
+    let artDesc = artData && artData.artDesc ? artData.artDesc : '';
+    let height = artData && artData.artDimensions && artData.artDimensions.height ? artData.artDimensions.height : ''; 
+    let width = artData && artData.artDimensions && artData.artDimensions.width ? artData.artDimensions.width : '';
+    let depth = artData && artData.artDimensions && artData.artDimensions.depth ? artData.artDimensions.depth : '';
+    let unit = artData && artData.artDimensions && artData.artDimensions.unit ? artData.artDimensions.unit : '';    
 
     urls.forEach( (url, i) => {
         html += `<div class="art-upload-info" data-url='${url}'>
@@ -401,13 +409,12 @@ const showArtDetails = function(urls, files){
         ${files[i].name}</div>
         <img src="https://uploads-ssl.webflow.com/629e3d15e8ee4837214bee58/634814774357a011e1937be2_Group%2091.svg" loading="lazy" alt="">
         </a>
-        <div class="col-wrapper"><div class="col-50"><label for="title-2" class="label">Art Title</label><input type="text" class="input w-input" maxlength="256" name="title" data-name="title" placeholder="Art Title" id="title"><label for="description-2" class="label">Art Description</label><textarea placeholder="Art Description" maxlength="5000" id="description" name="description" data-name="field" class="input w-input"></textarea></div><div class="col-50"><div class="unit-wrap"><label for="unit" class="label is--inline">Art Dimensions</label><select id="unit" name="unit" data-name="unit" class="input units w-select"><option value="inches">Inches</option><option value="Cm">Centimeters</option></select></div><div class="div-block"><input type="text" class="input dimension w-input" maxlength="256" name="width" data-name="width" placeholder="Width" id="width"><input type="text" class="input dimension w-input" maxlength="256" name="height" data-name="height" placeholder="Height" id="height"><input type="text" class="input dimension last w-input" maxlength="256" name="depth" data-name="depth" placeholder="Depth" id="depth"></div><label for="art-medium" class="label">Art Medium</label><select id="art-medium" name="art-medium" data-name="art-medium" class="input w-select"><option value="">Please select</option><option value="Oil">Oil</option><option value="Acrylic">Acrylic</option><option value="Mixed Media">Mixed Media</option><option value="Watercolor">Watercolor</option><option value="Encaustic">Encaustic</option><option value="Ink">Ink</option><option value="Tempera">Tempera</option><option value="Spray Paint">Spray Paint</option><option value="Digital">Digital</option><option value="Another option">Pencil</option><option value="Another option">Charcoal</option><option value="Pastels">Pastels</option><option value="Bronze">Bronze</option><option value="Steel">Steel</option><option value="Iron">Iron</option><option value="Precious Metals">Precious Metals</option><option value="Marble">Marble</option><option value="Other Stone">Other Stone</option><option value="Found Materials">Found Materials</option><option value="Glass">Glass</option><option value="Ceramic">Ceramic</option><option value="Paper Mache">Paper Mache</option></select></div></div>        
+        <div class="col-wrapper"><div class="col-50"><label for="title-2" class="label">Art Title</label><input type="text" class="input w-input" maxlength="256" name="title" data-name="title" placeholder="Art Title" id="title" value="${artTitle}"><label for="description-2" class="label">Art Description</label><textarea placeholder="Art Description" maxlength="5000" id="description" name="description" data-name="field" class="input w-input" value="${artDesc}"></textarea></div><div class="col-50"><div class="unit-wrap"><label for="unit" class="label is--inline">Art Dimensions</label><select id="unit" name="unit" data-name="unit" class="input units w-select" value="${unit}"><option value="inches">Inches</option><option value="Cm">Centimeters</option></select></div><div class="div-block"><input type="text" class="input dimension w-input" maxlength="256" name="width" data-name="width" placeholder="Width" id="width" value="${width}"><input type="text" class="input dimension w-input" maxlength="256" name="height" data-name="height" placeholder="Height" id="height" value="${height}"><input type="text" class="input dimension last w-input" maxlength="256" name="depth" data-name="depth" placeholder="Depth" id="depth" value="${depth}"></div><label for="art-medium" class="label">Art Medium</label><select id="art-medium" name="art-medium" data-name="art-medium" class="input w-select"><option value="">Please select</option><option value="Oil">Oil</option><option value="Acrylic">Acrylic</option><option value="Mixed Media">Mixed Media</option><option value="Watercolor">Watercolor</option><option value="Encaustic">Encaustic</option><option value="Ink">Ink</option><option value="Tempera">Tempera</option><option value="Spray Paint">Spray Paint</option><option value="Digital">Digital</option><option value="Another option">Pencil</option><option value="Another option">Charcoal</option><option value="Pastels">Pastels</option><option value="Bronze">Bronze</option><option value="Steel">Steel</option><option value="Iron">Iron</option><option value="Precious Metals">Precious Metals</option><option value="Marble">Marble</option><option value="Other Stone">Other Stone</option><option value="Found Materials">Found Materials</option><option value="Glass">Glass</option><option value="Ceramic">Ceramic</option><option value="Paper Mache">Paper Mache</option></select></div></div>        
         </div>
         `
     })
 
-    block.innerHTML += html
-
+    block.innerHTML += html;
     // Remove Art
     document.querySelectorAll('.file-deselector').forEach( e => {
         e.addEventListener('click', () => {
