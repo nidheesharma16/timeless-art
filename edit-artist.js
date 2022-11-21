@@ -130,7 +130,7 @@ const sender = function () {
             "administrativeName": document.getElementById('Admin-Contact-Name').value,
             "administrativePhone": document.getElementById('Admin-Contact-Phone').value,
             "administrativeEmail": document.getElementById('Admin-Contact-mail').value,
-            "createdNFTs": $("input[name='Previous NFTs']:checked").val(),
+            "createdNFTs": $("input[name='Previous-NFTs']:checked").val(),
             "otherNFTMarketplaces": {
 
                 "whichones": checkMarketplaces()
@@ -189,19 +189,10 @@ const sender = function () {
     }
 
     xhr.post(URL, item, (response) => {
-
-        console.log(response);
-
-        if (response == 409) {
-
-            document.querySelector('.success-head').textContent = 'Your application was already submitted to the Timeless team and a representative will get in touch with you'
-            document.querySelector('.success-para').textContent = 'If you need support please contact info@timelessart.io'
-        } else {
-            document.querySelector('.success-head').textContent = 'There has been an error with your submission'
-            document.querySelector('.success-para').textContent = 'Please reload the page and try again'
-
+        if (response != 200) {
+            document.querySelector('.success-head').textContent = 'There has been an error with your submission';
+            document.querySelector('.success-para').textContent = 'Please reload the page and try again';
         }
-
     })
 
 }
@@ -249,7 +240,7 @@ const checkArtCategories = function () {
 
 const checkMarketplaces = function () {
     let prevNft = 'none'
-    if ($("input[name='Previous NFTs']:checked").val() == 'yes') {
+    if ($("input[name='Previous-NFTs']:checked").val() == 'Yes') {
         prevNft = document.getElementById('NFT-Marketplaces').value
     }
 

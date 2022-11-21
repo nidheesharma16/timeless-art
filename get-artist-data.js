@@ -80,10 +80,9 @@ const getContactInfo = function(contactInfoData){
     document.getElementById('Admin-Contact-Name').value = contactInfoData.administrativeName ? contactInfoData.administrativeName : '';
     document.getElementById('Admin-Contact-Phone').value = contactInfoData.administrativePhone ? contactInfoData.administrativePhone : '';
     document.getElementById('Admin-Contact-mail').value = contactInfoData.administrativeEmail ? contactInfoData.administrativeEmail : '';
-    //document.getElementById("input[name='Previous NFTs']").checked = contactInfoData.createdNFTs && contactInfoData.createdNFTs ? true : false;
-    // if ($("input[name='Previous NFTs']:checked").val() == 'yes') {
-    //     document.getElementById('NFT-Marketplaces').value = '';
-    // }
+    document.querySelector("input[name='Previous-NFTs'][value='Yes']").checked = contactInfoData.createdNFTs && contactInfoData.createdNFTs == 'Yes' ? true : false;
+    document.querySelector("input[name='Previous-NFTs'][value='No']").checked = contactInfoData.createdNFTs && contactInfoData.createdNFTs == 'No'  ? true : false;
+    document.getElementById('NFT-Marketplaces').value = contactInfoData.otherNFTMarketplaces && contactInfoData.otherNFTMarketplaces.whichones ? contactInfoData.otherNFTMarketplaces.whichones : '';
 }
 
 const getArtInfo = function(artInfo){
