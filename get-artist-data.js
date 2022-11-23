@@ -1,4 +1,4 @@
-let getArtistProfile = 'https://api-dev.timelessart.io/api/timelessart/artistwithoutToken';
+let getArtistProfile = 'https://api.timelessart.io/api/timelessart/artistwithoutToken';
 
 // HTTP GET request
 easyHTTP.prototype.get = function (url, callback) {

@@ -1,7 +1,7 @@
 let mediums = [];
 const btns = document.querySelectorAll('.plus-icon')
 let i = 1;
-let URL = 'https://api-dev.timelessart.io/api/timelessart/artistprofile';
+let URL = 'https://api.timelessart.io/api/timelessart/artistprofile';
 
 function addCommas(nStr) {
     nStr += '';
