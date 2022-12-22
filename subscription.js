@@ -1,5 +1,5 @@
 var API_URL = "https://api.timelessart.io/api/timelessart/fetchSubs";
-var IMAGE_URL = "https://uploads-ssl.webflow.com/629e3d15e8ee4837214bee58/63a14b4ea97b93538ec5c797_subscription-p-500.jpeg"; 
+var IMAGE_URL = "https://uploads-ssl.webflow.com/629e3d15e8ee4837214bee58/63a14b4ea97b93538ec5c797_subscription-p-500.jpeg";
 
 $(document).ready(function () {
 
@@ -7,18 +7,18 @@ $(document).ready(function () {
         if (response && response.message && response.message.data) {
             var list = response.message.data;
             var total_plans = list.length;
-            var columnSize = 12 / total_plans; 
-             
+            var columnSize = 12 / total_plans;
+
             var list = list.sort((a, b) => parseFloat(a.amount) - parseFloat(b.amount));
 
             var finalHTML = "";
-            list.forEach(function (item, index) { 
+            list.forEach(function (item, index) {
                 var planName = item.nickname;
                 var metaData = item.metadata;
                 var planUrl = item.url;
                 var planAmount = item.amount / 100;
                 var buttonText = "PURCHASE NOW";
-                
+
                 var columnHtml = getColumnHTML(columnSize);
                 columnHtml = columnHtml.replace("#PLANNAME#", planName);
                 columnHtml = columnHtml.replace("#PLANAMOUNT#", planAmount);
@@ -27,10 +27,10 @@ $(document).ready(function () {
                 columnHtml = columnHtml.replace("#COLUMNSIZE#", columnSize);
                 columnHtml = columnHtml.replace("#BUTTONTEXT#", buttonText);
 
-                finalHTML += columnHtml; 
-            }); 
+                finalHTML += columnHtml;
+            });
 
-            $(".planlist").html(finalHTML);
+            $(".pricing-wrapper-2").html(finalHTML);
         }
     });
 
