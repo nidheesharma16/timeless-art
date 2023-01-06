@@ -1,6 +1,10 @@
 var API_URL = "https://api.timelessart.io/api/timelessart/marketPlace";
 
 $(document).ready(function () {
+
+    var sidebar = sidebarFiltersHtml();
+    $(".sidebar-col").html(sidebar);
+
     bindMarketPlaceListing(API_URL);
 });
 
@@ -88,8 +92,8 @@ function filterData() {
     var param_filter = "";
 
     /* Browse by Category - Start */
-    var chkPhysical = $('.main_category #chkPhysical:checked').val();
-    var chkDigital = $('.main_category #chkDigital:checked').val();
+    var chkPhysical = $('#chkPhysical:checked').val();
+    var chkDigital = $('#chkDigital:checked').val();
 
     if (chkPhysical || chkDigital) {
         var str = "";
@@ -286,4 +290,124 @@ function StartLoading() {
 
 function StopLoading() {
     jQuery.unblockUI();
+}
+
+function sidebarFiltersHtml() {
+    var htmlData = "";
+
+    // Browse by Category
+    htmlData += '<div class="filter-box">';
+    htmlData += '<h3>Browse by Category</h3>';
+    htmlData += '<div class="filter-option active">';
+    htmlData += '<input type="checkbox" id="chkPhysical" value="physical" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Physical</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option active">';
+    htmlData += '<input type="checkbox" id="chkDigital" value="digital" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Digital</div>';
+    htmlData += '</div>';
+    htmlData += '</div>';
+
+    // Price Range
+    htmlData += '<div class="filter-box">';
+    htmlData += '<h3>Price Range</h3>';
+    htmlData += '<div class="w-form">';
+    htmlData += '<form id="email-form" name="email-form" data-name="Email Form" method="get">';
+    htmlData += '<input type="number" class="price-filter w-input" maxlength="256" name="Price-Min" data-name="Price Min" placeholder="Min" id="Price-Min" />';
+    htmlData += '<div class="price-label">to</div>';
+    htmlData += '<input type="number" class="price-filter w-input" maxlength="256" name="Price-Max" data-name="Price Max" placeholder="Max" id="Price-Max" />';
+    htmlData += '</form>';
+    htmlData += '<div class="w-form-done">';
+    htmlData += '<div>Thank you! Your submission has been received!</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="w-form-fail">';
+    htmlData += '<div>Oops! Something went wrong while submitting the form.</div>';
+    htmlData += '</div>';
+    htmlData += '</div>';
+    htmlData += '</div>';
+
+    // Artist Category
+    htmlData += '<div class="filter-box">';
+    htmlData += '<h3>Artist Category</h3>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkElite" value="elite" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Elite</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkEstablished" value="established" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Established</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkEmerging" value="emerging" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Emerging</div>';
+    htmlData += '</div>';
+    htmlData += '</div>';
+
+    // Art Form
+    htmlData += '<div class="filter-box">';
+    htmlData += '<h3>Art Form</h3>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkDrawing" value="drawing" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Drawing</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkPainting" value="painting" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Painting</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkSculpture" value="sculpture" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Sculpture</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option active">';
+    htmlData += '<input type="checkbox" id="chkPhotography" value="photography" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Photography</div>';
+    htmlData += '</div>';
+    htmlData += '</div>';
+
+    // Medium
+    htmlData += '<div class="filter-box">';
+    htmlData += '<h3>Medium</h3>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkAcrylic" value="acrylic" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Acrylic</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkOil" value="oil" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Oil</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkPastels" value="pastels" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Pastels</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkGraphite" value="graphite" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Graphite</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkInk" value="ink" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Ink</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option active">';
+    htmlData += '<input type="checkbox" id="chkClay" value="clay" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Clay</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option active">';
+    htmlData += '<input type="checkbox" id="chkMulti" value="multi" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Multi</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkCharcoal" value="charcoal" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Charcoal</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option active">';
+    htmlData += '<input type="checkbox" id="chkPhoto" value="photo" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Photo</div>';
+    htmlData += '</div>';
+    htmlData += '<div class="filter-option">';
+    htmlData += '<input type="checkbox" id="chkWatercolors" value="watercolors" class="filter-highlight filter" />';
+    htmlData += '<div class="filter-text">Watercolors</div>';
+    htmlData += '</div>';
+    htmlData += '</div>';
+
+    return htmlData;
 }
