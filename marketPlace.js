@@ -27,7 +27,7 @@ function bindMarketPlaceListing(api_url) {
                     var creator = item.creator;
                     var currencySymbol = item.currencySymbol;
                     var artListingPrice = item.artListingPrice;
-                    var conversionRate = item.conversionRate;
+                    var conversionRate = getFormattedConversionRate(item.conversionRate);
                     var externalLink = item.externalLink;
                     var userType = item.userType;
                     var svgIcon = getSVGIcon(userType);
@@ -63,6 +63,20 @@ function bindMarketPlaceListing(api_url) {
         }
 
     });
+}
+
+function getFormattedConversionRate(value) {
+    var rate = 0;
+    if (value) {
+        var isDecimalValue = value.includes('.');
+        if (isDecimalValue) {            
+            rate = parseFloat(value).toFixed(2);
+        }
+        else {
+            rate = value;
+        }
+    }
+    return rate;
 }
 
 $(document).on("click", ".filter", function () {
