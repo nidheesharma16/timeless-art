@@ -1,19 +1,58 @@
 var API_URL = "https://api.timelessart.io/api/timelessart/marketPlace";
+var MEDIUM_API_URL = "https://api.timelessart.io/api/timelessart/findmedium";
+var current_page = 1;
+var records_per_page = 16;
+var totalData = 0;
+var lstMediumFilters = [];
 
 $(document).ready(function () {
 
     var sidebar = sidebarFiltersHtml();
     $(".sidebar-col").html(sidebar);
 
-    bindMarketPlaceListing(API_URL);
+    displayPaginationButtons();
+    bindMediumListing(MEDIUM_API_URL); 
+    bindMarketPlaceListing(API_URL); 
 });
+
+function displayPaginationButtons() {
+    var html = '<div class="col-wrapper"> <div class="col-25"> </div> <div class="col-75"> <a href="javascript:prevPage()" id="btn_prev" style="color:blue; font-size:20px;"><< Prev</a>&nbsp;&nbsp;&nbsp; <a href="javascript:nextPage()" id="btn_next" style="color: blue; font-size: 20px; ">Next >></a>&nbsp;&nbsp;&nbsp; <span style="font-size: 20px;">page: <span id="page" style="font-size: 20px;"></span></span> </div> </div>';
+    $(html).insertAfter(".has--sticky");
+}
+
+function bindMediumListing(api_url) {
+    //StartLoading();
+    console.log("API URL=", api_url);
+    $.get(api_url, function (response) {
+        console.log("Medium API response=", response);
+        if (response && response.response_data) {
+            lstMediumFilters = response.response_data;
+
+            //debugger;
+            var fltHtml = "<h3>Medium</h3>";
+            lstMediumFilters.forEach(function (medium, index) {
+                fltHtml += '<div class="filter-option"><input type="checkbox" id="chkMedium' + index + '" value="' + medium + '" class="filter-highlight filter"><div class="filter-text">' + medium + '</div></div>';
+            });
+            //debugger;
+            //StopLoading();
+        }
+        else {
+            //StopLoading();
+        }
+
+    });
+}
 
 function bindMarketPlaceListing(api_url) {
     StartLoading();
+    console.log("API URL=", api_url);
     $.get(api_url, function (response) {
         console.log("API response=", response);
         if (response && response.response_data) {
             var arts_list = response.response_data;
+             
+            totalData = response.pagination.totaldata;
+            changePage(current_page, false);
 
             if (arts_list.length > 0) {
 
@@ -80,7 +119,7 @@ function getFormattedConversionRate(value) {
 }
 
 $(document).on("click", ".filter", function () { 
-    hightlightSelectedFilter($(this)); 
+    hightlightSelectedFilter($(this));
     filterData();
 });
 
@@ -113,8 +152,9 @@ $(document).on("change", "#Price-Min, #Price-Max", function () {
 
 function filterData() {
 
+    var offset = (current_page - 1) * records_per_page;
     var filtered_api_url = API_URL;
-    var param_filter = "";
+    var param_filter = "?offset=" + offset;
 
     /* Browse by Category - Start */
     var chkPhysical = $('#chkPhysical:checked').val();
@@ -129,7 +169,7 @@ function filterData() {
             str += str ? "," + chkDigital : chkDigital;
         }
 
-        param_filter = "?artType=" + str;
+        param_filter += "&artType=" + str;
     }
 
     /* Browse by Category - End */
@@ -266,9 +306,8 @@ function filterData() {
     /* Medium - End */
 
     filtered_api_url += param_filter;
-
-    console.log("filtered_api_url=", filtered_api_url);
-    bindMarketPlaceListing(filtered_api_url);
+     
+    bindMarketPlaceListingNEW(filtered_api_url);
 
 }
 
@@ -435,4 +474,116 @@ function sidebarFiltersHtml() {
     htmlData += '</div>';
 
     return htmlData;
+}
+
+// pagination function 
+function prevPage() {
+    if (current_page > 1) {
+        current_page--;
+        changePage(current_page, true);
+    }
+}
+
+function nextPage() {
+    if (current_page < getnumPages()) {
+        current_page++;
+        changePage(current_page, true);
+    }
+}
+
+function changePage(page, isFilter) {
+    
+    var btn_next = document.getElementById("btn_next");
+    var btn_prev = document.getElementById("btn_prev"); 
+    var page_span = document.getElementById("page");
+
+    // Validate page
+    var numPages = getnumPages();
+    if (page < 1) page = 1;
+    if (page > numPages)
+        page = numPages;
+
+    current_page = page;
+
+    if (isFilter) {
+        filterData();
+    }  
+
+    page_span.innerHTML = page;
+
+    if (page == 1) {
+        btn_prev.style.display = "none";
+    } else {
+        btn_prev.style.display = "inline-block";
+    }
+
+    if (page == numPages) {
+        btn_next.style.display = "none";
+    } else {
+        btn_next.style.display = "inline-block";
+    }
+}
+
+function getnumPages() { 
+    return Math.ceil(totalData / records_per_page);
+}
+ 
+function bindMarketPlaceListingNEW(api_url) {
+    StartLoading();
+    console.log("API URL=", api_url);
+    $.get(api_url, function (response) {
+        console.log("API response=", response);
+        if (response && response.response_data) {
+            var arts_list = response.response_data;
+
+            totalData = response.pagination.totaldata; 
+
+            if (arts_list.length > 0) {
+
+                var finalHTML = "";
+
+                arts_list.forEach(function (item, index) {
+
+                    var artId = item.artId;
+                    var artName = item.artName;
+                    var artImage = item.primaryImage;
+                    var creator = item.creator;
+                    var currencySymbol = item.currencySymbol;
+                    var artListingPrice = item.artListingPrice;
+                    var conversionRate = getFormattedConversionRate(item.conversionRate);
+                    var externalLink = item.externalLink;
+                    var userType = item.userType;
+                    var svgIcon = getSVGIcon(userType);
+
+                    var artical = getArtColumnHTML();
+                    artical = artical.replace("#ART_NAME#", artName);
+                    artical = artical.replace("#ART_IMAGE#", artImage);
+                    artical = artical.replace("#CREATOR#", creator);
+                    artical = artical.replace("#METAVERSE_LINK#", externalLink);
+                    artical = artical.replace("#SELL_AMOUNT#", currencySymbol + artListingPrice);
+                    artical = artical.replace("#MRP_AMOUNT#", "$" + conversionRate);
+                    artical = artical.replace("#SVG_ICON#", svgIcon);
+
+                    finalHTML += artical;
+                });
+
+                $(".all-art__wrap").removeAttr("style");
+                $(".all-art__wrap").html(finalHTML);
+
+            }
+            else {
+                $(".all-art__wrap").removeAttr("style");
+                $(".all-art__wrap").css("height", "100%");
+
+                var noDataHTML = "<h3 style='text-align: center; width: 100%; position: relative; top: 50%;'>No Data Found !!</h3>";
+                $(".all-art__wrap").html(noDataHTML);
+            }
+
+            StopLoading();
+        }
+        else {
+            StopLoading();
+        }
+
+    });
 }
