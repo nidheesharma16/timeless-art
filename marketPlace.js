@@ -79,9 +79,20 @@ function getFormattedConversionRate(value) {
     return rate;
 }
 
-$(document).on("click", ".filter", function () {
+$(document).on("click", ".filter", function () { 
+    hightlightSelectedFilter($(this)); 
     filterData();
 });
+
+function hightlightSelectedFilter(element) {
+    var isChecked = element.is(':checked');
+    if (isChecked) {
+        element.parent().addClass("active");
+    }
+    else {
+        element.parent().removeClass("active");
+    }
+}
 
 $(document).on("change", "#Price-Min, #Price-Max", function () {
 
@@ -312,11 +323,11 @@ function sidebarFiltersHtml() {
     // Browse by Category
     htmlData += '<div class="filter-box">';
     htmlData += '<h3>Browse by Category</h3>';
-    htmlData += '<div class="filter-option active">';
+    htmlData += '<div class="filter-option">';
     htmlData += '<input type="checkbox" id="chkPhysical" value="physical" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Physical</div>';
     htmlData += '</div>';
-    htmlData += '<div class="filter-option active">';
+    htmlData += '<div class="filter-option">';
     htmlData += '<input type="checkbox" id="chkDigital" value="digital" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Digital</div>';
     htmlData += '</div>';
@@ -372,7 +383,7 @@ function sidebarFiltersHtml() {
     htmlData += '<input type="checkbox" id="chkSculpture" value="Sculpture" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Sculpture</div>';
     htmlData += '</div>';
-    htmlData += '<div class="filter-option active">';
+    htmlData += '<div class="filter-option">';
     htmlData += '<input type="checkbox" id="chkPhotography" value="Photography" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Photography</div>';
     htmlData += '</div>';
@@ -401,11 +412,11 @@ function sidebarFiltersHtml() {
     htmlData += '<input type="checkbox" id="chkInk" value="Ink" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Ink</div>';
     htmlData += '</div>';
-    htmlData += '<div class="filter-option active">';
+    htmlData += '<div class="filter-option">';
     htmlData += '<input type="checkbox" id="chkClay" value="Clay" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Clay</div>';
     htmlData += '</div>';
-    htmlData += '<div class="filter-option active">';
+    htmlData += '<div class="filter-option">';
     htmlData += '<input type="checkbox" id="chkMulti" value="Multi" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Multi</div>';
     htmlData += '</div>';
@@ -413,7 +424,7 @@ function sidebarFiltersHtml() {
     htmlData += '<input type="checkbox" id="chkCharcoal" value="Charcoal" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Charcoal</div>';
     htmlData += '</div>';
-    htmlData += '<div class="filter-option active">';
+    htmlData += '<div class="filter-option">';
     htmlData += '<input type="checkbox" id="chkPhoto" value="Photo" class="filter-highlight filter" />';
     htmlData += '<div class="filter-text">Photo</div>';
     htmlData += '</div>';
