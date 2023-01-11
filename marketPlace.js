@@ -16,30 +16,25 @@ $(document).ready(function () {
 });
 
 function displayPaginationButtons() {
-    var html = '<div class="col-wrapper"> <div class="col-25"> </div> <div class="col-75"> <a href="javascript:prevPage()" id="btn_prev" style="color:blue; font-size:20px;"><< Prev</a>&nbsp;&nbsp;&nbsp; <a href="javascript:nextPage()" id="btn_next" style="color: blue; font-size: 20px; ">Next >></a>&nbsp;&nbsp;&nbsp; <span style="font-size: 20px;">page: <span id="page" style="font-size: 20px;"></span></span> </div> </div>';
+    var html = '<div class="col-wrapper pagination"> <div class="col-25"> </div> <div class="col-75"> <a href="javascript:prevPage()" id="btn_prev" style="color:blue; font-size:20px;"><< Prev</a>&nbsp;&nbsp;&nbsp; <a href="javascript:nextPage()" id="btn_next" style="color: blue; font-size: 20px; ">Next >></a>&nbsp;&nbsp;&nbsp; <span style="font-size: 20px;">page: <span id="page" style="font-size: 20px;"></span></span> </div> </div>';
     $(html).insertAfter(".has--sticky");
 }
 
-function bindMediumListing(api_url) {
-    //StartLoading();
+function bindMediumListing(api_url) {    
     console.log("API URL=", api_url);
     $.get(api_url, function (response) {
         console.log("Medium API response=", response);
         if (response && response.response_data) {
             lstMediumFilters = response.response_data;
-
-            //debugger;
+             
             var fltHtml = "<h3>Medium</h3>";
             lstMediumFilters.forEach(function (medium, index) {
                 fltHtml += '<div class="filter-option"><input type="checkbox" id="chkMedium' + index + '" value="' + medium + '" class="filter-highlight filter"><div class="filter-text">' + medium + '</div></div>';
-            });
-            //debugger;
-            //StopLoading();
+            });  
+            $(".filter-box.medium").html(fltHtml);
         }
-        else {
-            //StopLoading();
-        }
-
+        else { 
+        } 
     });
 }
 
@@ -85,7 +80,7 @@ function bindMarketPlaceListing(api_url) {
 
                 $(".all-art__wrap").removeAttr("style");
                 $(".all-art__wrap").html(finalHTML);
-
+                $(".pagination").show();
             }
             else {
                 $(".all-art__wrap").removeAttr("style");
@@ -93,11 +88,12 @@ function bindMarketPlaceListing(api_url) {
 
                 var noDataHTML = "<h3 style='text-align: center; width: 100%; position: relative; top: 50%;'>No Data Found !!</h3>";
                 $(".all-art__wrap").html(noDataHTML);
-            }
-
+                $(".pagination").hide();
+            } 
             StopLoading();
         }
         else {
+            $(".pagination").hide();
             StopLoading();
         }
 
@@ -244,61 +240,13 @@ function filterData() {
 
     /* Medium - Start */
 
-    var chkAcrylic = $('#chkAcrylic:checked').val();
-    var chkOil = $('#chkOil:checked').val();
-    var chkPastels = $('#chkPastels:checked').val();
-    var chkGraphite = $('#chkGraphite:checked').val();
-    var chkInk = $('#chkInk:checked').val();
-
-    var chkClay = $('#chkClay:checked').val();
-    var chkMulti = $('#chkMulti:checked').val();
-    var chkCharcoal = $('#chkCharcoal:checked').val();
-    var chkPhoto = $('#chkPhoto:checked').val();
-    var chkWatercolors = $('#chkWatercolors:checked').val();
-
-    if (chkAcrylic || chkOil || chkPastels || chkGraphite || chkInk || chkClay || chkMulti || chkCharcoal || chkPhoto || chkWatercolors) {
-
+    var mediumFilterCount = $(".filter-box.medium .filter:checked").length;
+    if (mediumFilterCount > 0) {
         var str = "";
-        if (chkAcrylic) {
-            str += chkAcrylic;
-        }
-
-        if (chkOil) {
-            str += str ? "," + chkOil : chkOil;
-        }
-
-        if (chkPastels) {
-            str += str ? "," + chkPastels : chkPastels;
-        }
-
-        if (chkGraphite) {
-            str += str ? "," + chkGraphite : chkGraphite;
-        }
-
-        if (chkInk) {
-            str += str ? "," + chkInk : chkInk;
-        }
-
-        if (chkClay) {
-            str += str ? "," + chkClay : chkClay;
-        }
-
-        if (chkMulti) {
-            str += str ? "," + chkMulti : chkMulti;
-        }
-
-        if (chkCharcoal) {
-            str += str ? "," + chkCharcoal : chkCharcoal;
-        }
-
-        if (chkPhoto) {
-            str += str ? "," + chkPhoto : chkPhoto;
-        }
-
-        if (chkWatercolors) {
-            str += str ? "," + chkWatercolors : chkWatercolors;
-        }
-
+        $(".filter-box.medium .filter:checked").each(function () { 
+            var value = $(this).val();
+            str += str ? "," + value : value;
+        });
         var sign = param_filter ? "&" : "?";
         param_filter += sign + "medium=" + str;
     }
@@ -429,48 +377,7 @@ function sidebarFiltersHtml() {
     htmlData += '</div>';
 
     // Medium
-    htmlData += '<div class="filter-box">';
-    htmlData += '<h3>Medium</h3>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkAcrylic" value="Acrylic" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Acrylic</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkOil" value="Oil" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Oil</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkPastels" value="Pastels" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Pastels</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkGraphite" value="Graphite" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Graphite</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkInk" value="Ink" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Ink</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkClay" value="Clay" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Clay</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkMulti" value="Multi" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Multi</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkCharcoal" value="Charcoal" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Charcoal</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkPhoto" value="Photo" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Photo</div>';
-    htmlData += '</div>';
-    htmlData += '<div class="filter-option">';
-    htmlData += '<input type="checkbox" id="chkWatercolors" value="Watercolors" class="filter-highlight filter" />';
-    htmlData += '<div class="filter-text">Watercolors</div>';
-    htmlData += '</div>';
+    htmlData += '<div class="filter-box medium">'; 
     htmlData += '</div>';
 
     return htmlData;
@@ -569,7 +476,7 @@ function bindMarketPlaceListingNEW(api_url) {
 
                 $(".all-art__wrap").removeAttr("style");
                 $(".all-art__wrap").html(finalHTML);
-
+                $(".pagination").show();
             }
             else {
                 $(".all-art__wrap").removeAttr("style");
@@ -577,11 +484,13 @@ function bindMarketPlaceListingNEW(api_url) {
 
                 var noDataHTML = "<h3 style='text-align: center; width: 100%; position: relative; top: 50%;'>No Data Found !!</h3>";
                 $(".all-art__wrap").html(noDataHTML);
+                $(".pagination").hide();
             }
 
             StopLoading();
         }
         else {
+            $(".pagination").hide();
             StopLoading();
         }
 
