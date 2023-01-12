@@ -4,6 +4,7 @@ var current_page = 1;
 var records_per_page = 16;
 var totalData = 0;
 var lstMediumFilters = [];
+var selectedCurrency = "";
 
 $(document).ready(function () {
 
@@ -11,8 +12,8 @@ $(document).ready(function () {
     $(".sidebar-col").html(sidebar);
 
     displayPaginationButtons();
-    bindMediumListing(MEDIUM_API_URL); 
-    bindMarketPlaceListing(API_URL); 
+    bindMediumListing(MEDIUM_API_URL);
+    bindMarketPlaceListing(API_URL);
 });
 
 function displayPaginationButtons() {
@@ -20,21 +21,21 @@ function displayPaginationButtons() {
     $(html).insertAfter(".has--sticky");
 }
 
-function bindMediumListing(api_url) {    
+function bindMediumListing(api_url) {
     console.log("API URL=", api_url);
     $.get(api_url, function (response) {
         console.log("Medium API response=", response);
         if (response && response.response_data) {
             lstMediumFilters = response.response_data;
-             
+
             var fltHtml = "<h3>Medium</h3>";
             lstMediumFilters.forEach(function (medium, index) {
                 fltHtml += '<div class="filter-option"><input type="checkbox" id="chkMedium' + index + '" value="' + medium + '" class="filter-highlight filter"><div class="filter-text">' + medium + '</div></div>';
-            });  
+            });
             $(".filter-box.medium").html(fltHtml);
         }
-        else { 
-        } 
+        else {
+        }
     });
 }
 
@@ -45,7 +46,7 @@ function bindMarketPlaceListing(api_url) {
         console.log("API response=", response);
         if (response && response.response_data) {
             var arts_list = response.response_data;
-             
+
             totalData = response.pagination.totaldata;
             changePage(current_page, false);
 
@@ -61,7 +62,7 @@ function bindMarketPlaceListing(api_url) {
                     var creator = item.creator;
                     var currencySymbol = item.currencySymbol;
                     var artListingPrice = item.artListingPrice;
-                    var conversionRate = getFormattedConversionRate(item.conversionRate);
+                    //var conversionRate = getFormattedConversionRate(item.conversionRate);
                     var externalLink = item.externalLink;
                     var userType = item.userType;
                     var svgIcon = getSVGIcon(userType);
@@ -72,7 +73,7 @@ function bindMarketPlaceListing(api_url) {
                     artical = artical.replace("#CREATOR#", creator);
                     artical = artical.replace("#METAVERSE_LINK#", externalLink);
                     artical = artical.replace("#SELL_AMOUNT#", currencySymbol + artListingPrice);
-                    artical = artical.replace("#MRP_AMOUNT#", "$" + conversionRate);
+                    //artical = artical.replace("#MRP_AMOUNT#", "$" + conversionRate);
                     artical = artical.replace("#SVG_ICON#", svgIcon);
 
                     finalHTML += artical;
@@ -89,7 +90,7 @@ function bindMarketPlaceListing(api_url) {
                 var noDataHTML = "<h3 style='text-align: center; width: 100%; position: relative; top: 50%;'>No Data Found !!</h3>";
                 $(".all-art__wrap").html(noDataHTML);
                 $(".pagination").hide();
-            } 
+            }
             StopLoading();
         }
         else {
@@ -104,7 +105,7 @@ function getFormattedConversionRate(value) {
     var rate = 0;
     if (value) {
         var isDecimalValue = value.includes('.');
-        if (isDecimalValue) {            
+        if (isDecimalValue) {
             rate = parseFloat(value).toFixed(2);
         }
         else {
@@ -114,7 +115,7 @@ function getFormattedConversionRate(value) {
     return rate;
 }
 
-$(document).on("click", ".filter", function () { 
+$(document).on("click", ".filter", function () {
     hightlightSelectedFilter($(this));
     filterData();
 });
@@ -243,7 +244,7 @@ function filterData() {
     var mediumFilterCount = $(".filter-box.medium .filter:checked").length;
     if (mediumFilterCount > 0) {
         var str = "";
-        $(".filter-box.medium .filter:checked").each(function () { 
+        $(".filter-box.medium .filter:checked").each(function () {
             var value = $(this).val();
             str += str ? "," + value : value;
         });
@@ -254,7 +255,7 @@ function filterData() {
     /* Medium - End */
 
     filtered_api_url += param_filter;
-     
+
     bindMarketPlaceListingNEW(filtered_api_url);
 
 }
@@ -266,14 +267,14 @@ function getArtColumnHTML() {
     htmlData += '<div class="art__item">';
     htmlData += '<img src="#ART_IMAGE#" style="width:200px; height: 200px;" loading="lazy" sizes="(max-width: 479px) 83vw, 200px" alt="Art Image" class="art__image" />';
     htmlData += '<div class="art__info">';
-    htmlData += '<h3 class="art__title" style="width:160px; height: 60px;">#ART_NAME#</h3>';
+    htmlData += '<h3 class="art__title" style="width:160px; height: 60px; font-size:13px;">#ART_NAME#</h3>';
     htmlData += '<div>';
-    htmlData += '<h3 class="artist__name under-art">#CREATOR#</h3>';
+    htmlData += '<h3 class="artist__name under-art" style="text-transform: none;">#CREATOR#</h3>';
     htmlData += '<img src="#SVG_ICON#" loading="lazy" width="17" alt="" class="artist__badge under-art" />';
     htmlData += '</div>';
     htmlData += '<div class="art__info-stats">';
-    htmlData += '<h4 class="art__info-number">#SELL_AMOUNT#</h4>';
-    htmlData += '<div>#MRP_AMOUNT#</div>';
+    htmlData += '<h5 class="art__info-number" style="font-weight:500">#SELL_AMOUNT#</h5>';
+    /*htmlData += '<div>#MRP_AMOUNT#</div>';*/
     htmlData += '</div>';
     htmlData += '<div class="art-button-wrap"><a href="#" class="button art-button top w-button">View Art Page</a><a href="#METAVERSE_LINK#" class="button art-button w-button">View in Metaverse</a></div>';
     htmlData += '</div>';
@@ -285,13 +286,13 @@ function getArtColumnHTML() {
 function getSVGIcon(userType) {
     var icon = "";
     if (userType == "Elite") {
-        icon = "https://uploads-ssl.webflow.com/63066914489fb9bc850e1c54/6360a599798bc2837502bdf5_Elite.svg";
+        icon = "https://uploads-ssl.webflow.com/63066914489fb9bc850e1c54/6360a599990398aa5a4bab73_Established.svg"; // blue
     }
     else if (userType == "Established") {
-        icon = "https://uploads-ssl.webflow.com/63066914489fb9bc850e1c54/6360a599990398aa5a4bab73_Established.svg";
+        icon = "https://uploads-ssl.webflow.com/63066914489fb9bc850e1c54/6360a599798bc2837502bdf5_Elite.svg"; // yellow
     }
     else if (userType == "Emerging") {
-        icon = "https://uploads-ssl.webflow.com/63066914489fb9bc850e1c54/6360a59912ba460bfbc699de_Emerging.svg";
+        icon = "https://uploads-ssl.webflow.com/63066914489fb9bc850e1c54/6360a59912ba460bfbc699de_Emerging.svg"; // black
     }
     return icon;
 }
@@ -377,7 +378,7 @@ function sidebarFiltersHtml() {
     htmlData += '</div>';
 
     // Medium
-    htmlData += '<div class="filter-box medium">'; 
+    htmlData += '<div class="filter-box medium">';
     htmlData += '</div>';
 
     return htmlData;
@@ -399,9 +400,9 @@ function nextPage() {
 }
 
 function changePage(page, isFilter) {
-    
+
     var btn_next = document.getElementById("btn_next");
-    var btn_prev = document.getElementById("btn_prev"); 
+    var btn_prev = document.getElementById("btn_prev");
     var page_span = document.getElementById("page");
 
     // Validate page
@@ -414,7 +415,7 @@ function changePage(page, isFilter) {
 
     if (isFilter) {
         filterData();
-    }  
+    }
 
     page_span.innerHTML = page;
 
@@ -431,10 +432,10 @@ function changePage(page, isFilter) {
     }
 }
 
-function getnumPages() { 
+function getnumPages() {
     return Math.ceil(totalData / records_per_page);
 }
- 
+
 function bindMarketPlaceListingNEW(api_url) {
     StartLoading();
     console.log("API URL=", api_url);
@@ -443,7 +444,7 @@ function bindMarketPlaceListingNEW(api_url) {
         if (response && response.response_data) {
             var arts_list = response.response_data;
 
-            totalData = response.pagination.totaldata; 
+            totalData = response.pagination.totaldata;
 
             if (arts_list.length > 0) {
 
@@ -457,7 +458,7 @@ function bindMarketPlaceListingNEW(api_url) {
                     var creator = item.creator;
                     var currencySymbol = item.currencySymbol;
                     var artListingPrice = item.artListingPrice;
-                    var conversionRate = getFormattedConversionRate(item.conversionRate);
+                    //var conversionRate = getFormattedConversionRate(item.conversionRate);
                     var externalLink = item.externalLink;
                     var userType = item.userType;
                     var svgIcon = getSVGIcon(userType);
@@ -468,7 +469,7 @@ function bindMarketPlaceListingNEW(api_url) {
                     artical = artical.replace("#CREATOR#", creator);
                     artical = artical.replace("#METAVERSE_LINK#", externalLink);
                     artical = artical.replace("#SELL_AMOUNT#", currencySymbol + artListingPrice);
-                    artical = artical.replace("#MRP_AMOUNT#", "$" + conversionRate);
+                    //artical = artical.replace("#MRP_AMOUNT#", "$" + conversionRate);
                     artical = artical.replace("#SVG_ICON#", svgIcon);
 
                     finalHTML += artical;
