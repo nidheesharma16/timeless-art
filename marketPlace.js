@@ -4,6 +4,7 @@ var current_page = 1;
 var records_per_page = 16;
 var totalData = 0;
 var lstMediumFilters = [];
+var defautCurrency = "USD";
 var selectedCurrency = "";
 
 $(document).ready(function () {
@@ -57,7 +58,7 @@ function bindMarketPlaceListing(api_url) {
                 arts_list.forEach(function (item, index) {
 
                     var artId = item.artId;
-                    var artName = item.artName;
+                    var artName = trancateTitle(item.artName, 20);
                     var artImage = item.primaryImage;
                     var creator = item.creator;
                     var currencySymbol = item.currencySymbol;
@@ -68,7 +69,8 @@ function bindMarketPlaceListing(api_url) {
                     var svgIcon = getSVGIcon(userType);
 
                     var artical = getArtColumnHTML();
-                    artical = artical.replace("#ART_NAME#", artName);
+                    artical = artical.replace("#ART_NAME_SHORT#", artName);
+                    artical = artical.replace("#ART_NAME_LONG#", item.artName);
                     artical = artical.replace("#ART_IMAGE#", artImage);
                     artical = artical.replace("#CREATOR#", creator);
                     artical = artical.replace("#METAVERSE_LINK#", externalLink);
@@ -82,6 +84,7 @@ function bindMarketPlaceListing(api_url) {
                 $(".all-art__wrap").removeAttr("style");
                 $(".all-art__wrap").html(finalHTML);
                 $(".pagination").show();
+                addMouseEvent();
             }
             else {
                 $(".all-art__wrap").removeAttr("style");
@@ -117,7 +120,7 @@ function getFormattedConversionRate(value) {
 
 $(document).on("click", ".filter", function () {
     hightlightSelectedFilter($(this));
-    filterData();
+    filterData(true);
 });
 
 function hightlightSelectedFilter(element) {
@@ -144,12 +147,19 @@ $(document).on("change", "#Price-Min, #Price-Max", function () {
     }
 
     if ((minPrice && maxPrice) || (!minPrice && !maxPrice))
-        filterData();
+        filterData(true);
 });
 
-function filterData() {
+function filterData(isResetOffset) {
 
-    var offset = (current_page - 1) * records_per_page;
+    var offset = 0;
+    if (isResetOffset) {
+        current_page = 1;
+    }
+    else {
+        offset = (current_page - 1) * records_per_page;
+    }
+
     var filtered_api_url = API_URL;
     var param_filter = "?offset=" + offset;
 
@@ -256,7 +266,7 @@ function filterData() {
 
     filtered_api_url += param_filter;
 
-    bindMarketPlaceListingNEW(filtered_api_url);
+    bindMarketPlaceListingNEW(filtered_api_url, isResetOffset);
 
 }
 
@@ -267,7 +277,8 @@ function getArtColumnHTML() {
     htmlData += '<div class="art__item">';
     htmlData += '<img src="#ART_IMAGE#" style="width:200px; height: 200px;" loading="lazy" sizes="(max-width: 479px) 83vw, 200px" alt="Art Image" class="art__image" />';
     htmlData += '<div class="art__info">';
-    htmlData += '<h3 class="art__title" style="width:160px; height: 60px; font-size:13px;">#ART_NAME#</h3>';
+    htmlData += '<h3 class="art__title short" style="width:160px; font-size:13px;">#ART_NAME_SHORT#</h3>';
+    htmlData += '<h3 class="art__title long" style="width:160px; height:60; font-size:13px; display:none; text-transform:none;">#ART_NAME_LONG#</h3>';
     htmlData += '<div>';
     htmlData += '<h3 class="artist__name under-art" style="text-transform: none;">#CREATOR#</h3>';
     htmlData += '<img src="#SVG_ICON#" loading="lazy" width="17" alt="" class="artist__badge under-art" />';
@@ -414,7 +425,7 @@ function changePage(page, isFilter) {
     current_page = page;
 
     if (isFilter) {
-        filterData();
+        filterData(false);
     }
 
     page_span.innerHTML = page;
@@ -436,7 +447,7 @@ function getnumPages() {
     return Math.ceil(totalData / records_per_page);
 }
 
-function bindMarketPlaceListingNEW(api_url) {
+function bindMarketPlaceListingNEW(api_url, isResetOffset) {
     StartLoading();
     console.log("API URL=", api_url);
     $.get(api_url, function (response) {
@@ -446,6 +457,9 @@ function bindMarketPlaceListingNEW(api_url) {
 
             totalData = response.pagination.totaldata;
 
+            if (isResetOffset)
+                changePage(1, false);
+
             if (arts_list.length > 0) {
 
                 var finalHTML = "";
@@ -453,7 +467,7 @@ function bindMarketPlaceListingNEW(api_url) {
                 arts_list.forEach(function (item, index) {
 
                     var artId = item.artId;
-                    var artName = item.artName;
+                    var artName = trancateTitle(item.artName, 20);
                     var artImage = item.primaryImage;
                     var creator = item.creator;
                     var currencySymbol = item.currencySymbol;
@@ -464,7 +478,8 @@ function bindMarketPlaceListingNEW(api_url) {
                     var svgIcon = getSVGIcon(userType);
 
                     var artical = getArtColumnHTML();
-                    artical = artical.replace("#ART_NAME#", artName);
+                    artical = artical.replace("#ART_NAME_SHORT#", artName);
+                    artical = artical.replace("#ART_NAME_LONG#", item.artName);
                     artical = artical.replace("#ART_IMAGE#", artImage);
                     artical = artical.replace("#CREATOR#", creator);
                     artical = artical.replace("#METAVERSE_LINK#", externalLink);
@@ -478,6 +493,7 @@ function bindMarketPlaceListingNEW(api_url) {
                 $(".all-art__wrap").removeAttr("style");
                 $(".all-art__wrap").html(finalHTML);
                 $(".pagination").show();
+                addMouseEvent();
             }
             else {
                 $(".all-art__wrap").removeAttr("style");
@@ -495,5 +511,45 @@ function bindMarketPlaceListingNEW(api_url) {
             StopLoading();
         }
 
+    });
+}
+
+/* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function (event) {
+    if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+
+function trancateTitle(title, maxLen) {
+    if (title.length > maxLen) {
+        title = title.substring(0, maxLen) + '..';
+    }
+    return title;
+}
+
+function addMouseEvent() {
+    $('.art__item').mouseenter(
+        function () {
+            $(this).find(".art__title.short").hide();
+            $(this).find(".art__title.long").show();
+        });
+
+    $('.art__item').mouseleave(function () {
+        $(this).find(".art__title.short").show();
+        $(this).find(".art__title.long").hide();
     });
 }
