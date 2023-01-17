@@ -4,14 +4,13 @@ var current_page = 1;
 var records_per_page = 16;
 var totalData = 0;
 var lstMediumFilters = [];
-var defautCurrency = "USD";
-var selectedCurrency = "";
+var selectedCurrency = "USD";
 
 $(document).ready(function () {
-
     var sidebar = sidebarFiltersHtml();
     $(".sidebar-col").html(sidebar);
 
+    displayCurrencyMenu();
     displayPaginationButtons();
     bindMediumListing(MEDIUM_API_URL);
     bindMarketPlaceListing(API_URL);
@@ -20,6 +19,11 @@ $(document).ready(function () {
 function displayPaginationButtons() {
     var html = '<div class="col-wrapper pagination"> <div class="col-25"> </div> <div class="col-75"> <a href="javascript:prevPage()" id="btn_prev" style="color:blue; font-size:20px;"><< Prev</a>&nbsp;&nbsp;&nbsp; <a href="javascript:nextPage()" id="btn_next" style="color: blue; font-size: 20px; ">Next >></a>&nbsp;&nbsp;&nbsp; <span style="font-size: 20px;">page: <span id="page" style="font-size: 20px;"></span></span> </div> </div>';
     $(html).insertAfter(".has--sticky");
+}
+
+function displayCurrencyMenu() {
+    var html = "<div class='nav__link w-inline-block'> <ul id='menu'> <li class='parent'> <img style='width: 40px;' src='profile.jpg' /> <ul class='child'> <li class='parent'> <a href='#'>Change Currency</a> <ul class='child'> <li><a href='javascript:void(0);' onclick=changeCurrency('USD')>USD</a></li><li><a href='javascript:void(0);' onclick=changeCurrency('EUR')>EUR</a></li><li><a href='javascript:void(0);' onclick=changeCurrency('CAD')>CAD</a></li><li><a href='javascript:void(0);' onclick=changeCurrency('AED')>AED</a></li><li><a href='javascript:void(0);' onclick=changeCurrency('AUD')>AUD</a></li></ul> </li></ul> </li> </ul> </div>";
+    $(html).insertAfter(".nav__right-side a.w-inline-block:last");
 }
 
 function bindMediumListing(api_url) {
@@ -41,6 +45,7 @@ function bindMediumListing(api_url) {
 }
 
 function bindMarketPlaceListing(api_url) {
+    api_url = api_url + "?currency=" + selectedCurrency;
     StartLoading();
     console.log("API URL=", api_url);
     $.get(api_url, function (response) {
@@ -63,7 +68,6 @@ function bindMarketPlaceListing(api_url) {
                     var creator = item.creator;
                     var currencySymbol = item.currencySymbol;
                     var artListingPrice = item.artListingPrice;
-                    //var conversionRate = getFormattedConversionRate(item.conversionRate);
                     var externalLink = item.externalLink;
                     var userType = item.userType;
                     var svgIcon = getSVGIcon(userType);
@@ -75,7 +79,6 @@ function bindMarketPlaceListing(api_url) {
                     artical = artical.replace("#CREATOR#", creator);
                     artical = artical.replace("#METAVERSE_LINK#", externalLink);
                     artical = artical.replace("#SELL_AMOUNT#", currencySymbol + artListingPrice);
-                    //artical = artical.replace("#MRP_AMOUNT#", "$" + conversionRate);
                     artical = artical.replace("#SVG_ICON#", svgIcon);
 
                     finalHTML += artical;
@@ -102,20 +105,6 @@ function bindMarketPlaceListing(api_url) {
         }
 
     });
-}
-
-function getFormattedConversionRate(value) {
-    var rate = 0;
-    if (value) {
-        var isDecimalValue = value.includes('.');
-        if (isDecimalValue) {
-            rate = parseFloat(value).toFixed(2);
-        }
-        else {
-            rate = value;
-        }
-    }
-    return rate;
 }
 
 $(document).on("click", ".filter", function () {
@@ -162,6 +151,8 @@ function filterData(isResetOffset) {
 
     var filtered_api_url = API_URL;
     var param_filter = "?offset=" + offset;
+
+    param_filter += "&currency=" + selectedCurrency;
 
     /* Browse by Category - Start */
     var chkPhysical = $('#chkPhysical:checked').val();
@@ -277,15 +268,14 @@ function getArtColumnHTML() {
     htmlData += '<div class="art__item">';
     htmlData += '<img src="#ART_IMAGE#" style="width:200px; height: 200px;" loading="lazy" sizes="(max-width: 479px) 83vw, 200px" alt="Art Image" class="art__image" />';
     htmlData += '<div class="art__info">';
-    htmlData += '<h3 class="art__title short" style="width:160px; font-size:13px;">#ART_NAME_SHORT#</h3>';
-    htmlData += '<h3 class="art__title long" style="width:160px; height:60; font-size:13px; display:none; text-transform:none;">#ART_NAME_LONG#</h3>';
+    htmlData += '<h3 class="art__title short" style="width:160px; font-size:14px;">#ART_NAME_SHORT#</h3>';
+    htmlData += '<h3 class="art__title long" style="width:160px; height:60; font-size:14px; display:none;">#ART_NAME_LONG#</h3>';
     htmlData += '<div>';
     htmlData += '<h3 class="artist__name under-art" style="text-transform: none;">#CREATOR#</h3>';
     htmlData += '<img src="#SVG_ICON#" loading="lazy" width="17" alt="" class="artist__badge under-art" />';
     htmlData += '</div>';
     htmlData += '<div class="art__info-stats">';
-    htmlData += '<h5 class="art__info-number" style="font-weight:500">#SELL_AMOUNT#</h5>';
-    /*htmlData += '<div>#MRP_AMOUNT#</div>';*/
+    htmlData += '<h4 class="art__info-number">#SELL_AMOUNT#</h4>';
     htmlData += '</div>';
     htmlData += '<div class="art-button-wrap"><a href="#" class="button art-button top w-button">View Art Page</a><a href="#METAVERSE_LINK#" class="button art-button w-button">View in Metaverse</a></div>';
     htmlData += '</div>';
@@ -484,7 +474,6 @@ function bindMarketPlaceListingNEW(api_url, isResetOffset) {
                     artical = artical.replace("#CREATOR#", creator);
                     artical = artical.replace("#METAVERSE_LINK#", externalLink);
                     artical = artical.replace("#SELL_AMOUNT#", currencySymbol + artListingPrice);
-                    //artical = artical.replace("#MRP_AMOUNT#", "$" + conversionRate);
                     artical = artical.replace("#SVG_ICON#", svgIcon);
 
                     finalHTML += artical;
@@ -553,3 +542,14 @@ function addMouseEvent() {
         $(this).find(".art__title.long").hide();
     });
 }
+
+function changeCurrency(currencyCode) {
+    selectedCurrency = currencyCode;
+    filterData(true);
+}
+
+// One liner function:
+const addCSS = css => document.head.appendChild(document.createElement("style")).innerHTML = css;
+
+// Usage: 
+addCSS(".parent { display: block; position: relative; float: left; line-height: 30px; background-color: #4FA0D8; border-right: #CCC 1px solid; } .parent a { margin: 10px; color: #FFFFFF; text-decoration: none; } .parent:hover > ul { display: block; position: absolute; } .child { display: none; padding-top: 10px; } .child li { background-color: #F0F0F0; line-height: 30px; border-bottom: #CCC 1px solid; border-right: #CCC 1px solid; width: 100%; } .child li a { color: #000000; } ul { list-style: none; margin: 0; padding: 0px; min-width: 10em; } ul ul ul { right: 100%; top: 0; margin-left: 1px; } li:hover { background-color: darkgray; } .parent li:hover { background-color: darkgray; }");
