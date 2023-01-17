@@ -268,8 +268,8 @@ function getArtColumnHTML() {
     htmlData += '<div class="art__item">';
     htmlData += '<img src="#ART_IMAGE#" style="width:200px; height: 200px;" loading="lazy" sizes="(max-width: 479px) 83vw, 200px" alt="Art Image" class="art__image" />';
     htmlData += '<div class="art__info">';
-    htmlData += '<h3 class="art__title short" style="width:160px; font-size:14px;">#ART_NAME_SHORT#</h3>';
-    htmlData += '<h3 class="art__title long" style="width:160px; height:60; font-size:14px; display:none;">#ART_NAME_LONG#</h3>';
+    htmlData += '<h3 class="art__title short" style="width:160px; font-size:13px;">#ART_NAME_SHORT#</h3>';
+    htmlData += '<h3 class="art__title long" style="width:160px; height:60; font-size:13px; display:none;text-transform:none;">#ART_NAME_LONG#</h3>';
     htmlData += '<div>';
     htmlData += '<h3 class="artist__name under-art" style="text-transform: none;">#CREATOR#</h3>';
     htmlData += '<img src="#SVG_ICON#" loading="lazy" width="17" alt="" class="artist__badge under-art" />';
@@ -553,3 +553,4 @@ const addCSS = css => document.head.appendChild(document.createElement("style"))
 
 // Usage: 
 addCSS(".parent { display: block; position: relative; float: left; line-height: 30px; background-color: #4FA0D8; border-right: #CCC 1px solid; } .parent a { margin: 10px; color: #FFFFFF; text-decoration: none; } .parent:hover > ul { display: block; position: absolute; } .child { display: none; padding-top: 10px; } .child li { background-color: #F0F0F0; line-height: 30px; border-bottom: #CCC 1px solid; border-right: #CCC 1px solid; width: 100%; } .child li a { color: #000000; } ul { list-style: none; margin: 0; padding: 0px; min-width: 10em; } ul ul ul { right: 100%; top: 0; margin-left: 1px; } li:hover { background-color: darkgray; } .parent li:hover { background-color: darkgray; }");
+a
