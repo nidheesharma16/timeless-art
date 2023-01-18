@@ -548,4 +548,8 @@ function changeCurrency(currencyCode) {
     filterData(true);
 }
 
+// One liner function:
+// const addCSS = css => document.head.appendChild(document.createElement("style")).innerHTML = css;
 
+// // Usage:
+// addCSS(".parent { display: block; position: relative; float: left; line-height: 30px; background-color: #4FA0D8; border-right: #CCC 1px solid; } .parent a { margin: 10px; color: #FFFFFF; text-decoration: none; } .parent:hover > ul { display: block; position: absolute; } .child { display: none; padding-top: 10px; } .child li { background-color: #F0F0F0; line-height: 30px; border-bottom: #CCC 1px solid; border-right: #CCC 1px solid; width: 100%; } .child li a { color: #000000; } ul { list-style: none; margin: 0; padding: 0px; min-width: 10em; } ul ul ul { right: 100%; top: 0; margin-left: 1px; } li:hover { background-color: darkgray; } .parent li:hover { background-color: darkgray; }");
