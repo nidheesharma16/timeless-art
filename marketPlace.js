@@ -9,9 +9,9 @@ var selectedCurrency = "USD";
 $(document).ready(function () {
     var sidebar = sidebarFiltersHtml();
     $(".sidebar-col").html(sidebar);
-
+    $(".all-art__wrap").after('<ul class="pagination-sm pagination paginationmarketplace"></ul>');
     displayCurrencyMenu();
-    displayPaginationButtons();
+    // displayPaginationButtons();
     bindMediumListing(MEDIUM_API_URL);
     bindMarketPlaceListing(API_URL);
 });
@@ -54,7 +54,7 @@ function bindMarketPlaceListing(api_url) {
             var arts_list = response.response_data;
 
             totalData = response.pagination.totaldata;
-            changePage(current_page, false);
+            //changePage(current_page, false);
 
             if (arts_list.length > 0) {
 
@@ -88,6 +88,19 @@ function bindMarketPlaceListing(api_url) {
                 $(".all-art__wrap").html(finalHTML);
                 $(".pagination").show();
                 addMouseEvent();
+                var totllpg = TotalPages();
+                $('.paginationmarketplace').twbsPagination({
+                    totalPages: totllpg,
+                    visiblePages: 6,
+                    next: 'Next',
+                    prev: 'Prev',
+                    onPageClick: function (event, page) {
+                        changePage(page, true);
+                        //fetch content and render here
+                        // $('#page-content').text('Page ' + page) + ' content here';
+                    }
+                });
+
             }
             else {
                 $(".all-art__wrap").removeAttr("style");
@@ -402,9 +415,9 @@ function nextPage() {
 
 function changePage(page, isFilter) {
 
-    var btn_next = document.getElementById("btn_next");
-    var btn_prev = document.getElementById("btn_prev");
-    var page_span = document.getElementById("page");
+    //   var btn_next = document.getElementById("btn_next");
+    // var btn_prev = document.getElementById("btn_prev");
+    // var page_span = document.getElementById("page");
 
     // Validate page
     var numPages = getnumPages();
@@ -418,22 +431,26 @@ function changePage(page, isFilter) {
         filterData(false);
     }
 
-    page_span.innerHTML = page;
+    //  page_span.innerHTML = page;
 
-    if (page == 1) {
-        btn_prev.style.display = "none";
-    } else {
-        btn_prev.style.display = "inline-block";
-    }
+    //if (page == 1) {
+    //    btn_prev.style.display = "none";
+    //} else {
+    //    btn_prev.style.display = "inline-block";
+    //}
 
-    if (page == numPages) {
-        btn_next.style.display = "none";
-    } else {
-        btn_next.style.display = "inline-block";
-    }
+    //if (page == numPages) {
+    //    btn_next.style.display = "none";
+    //} else {
+    //    btn_next.style.display = "inline-block";
+    //}
 }
 
 function getnumPages() {
+    return Math.ceil(totalData / records_per_page);
+}
+
+function TotalPages() {
     return Math.ceil(totalData / records_per_page);
 }
 
@@ -447,8 +464,8 @@ function bindMarketPlaceListingNEW(api_url, isResetOffset) {
 
             totalData = response.pagination.totaldata;
 
-            if (isResetOffset)
-                changePage(1, false);
+
+            //  changePage(1, false);
 
             if (arts_list.length > 0) {
 
@@ -483,6 +500,24 @@ function bindMarketPlaceListingNEW(api_url, isResetOffset) {
                 $(".all-art__wrap").html(finalHTML);
                 $(".pagination").show();
                 addMouseEvent();
+                if (isResetOffset) {
+                    if ($('.paginationmarketplace').data("twbs-pagination")) {
+                        $('.paginationmarketplace').twbsPagination('destroy');
+                    }
+
+                    var totllpg = TotalPages();
+                    $('.paginationmarketplace').twbsPagination({
+                        totalPages: totllpg,
+                        visiblePages: 6,
+                        next: 'Next',
+                        prev: 'Prev',
+                        onPageClick: function (event, page) {
+                            changePage(page, true);
+                            //fetch content and render here
+                            // $('#page-content').text('Page ' + page) + ' content here';
+                        }
+                    });
+                }
             }
             else {
                 $(".all-art__wrap").removeAttr("style");
@@ -552,4 +587,4 @@ function changeCurrency(currencyCode) {
 const addCSS = css => document.head.appendChild(document.createElement("style")).innerHTML = css;
 
 // // Usage:
-addCSS(".parent { display: block; position: relative; float: left; line-height: 30px; background-color: #4FA0D8; border-right: #CCC 1px solid; } .parent a { margin: 10px; color: #FFFFFF; text-decoration: none; } .parent:hover > ul { display: block; position: absolute; } .child { display: none; padding-top: 10px; } .child li { background-color: #F0F0F0; line-height: 30px; border-bottom: #CCC 1px solid; border-right: #CCC 1px solid; width: 100%; } .child li a { color: #000000; } ul { list-style: none; margin: 0; padding: 0px; min-width: 10em; } ul ul ul { right: 100%; top: 0; margin-left: 1px; } li:hover { background-color: darkgray; } .parent li:hover { background-color: darkgray; }");
+addCSS(".parent { display: block; position: relative; float: left; line-height: 30px; background-color: #4FA0D8; border-right: #CCC 1px solid; } .parent a { margin: 10px; color: #FFFFFF; text-decoration: none; } .parent:hover > ul { display: block; position: absolute; } .child { display: none; padding-top: 10px; } .child li { background-color: #F0F0F0; line-height: 30px; border-bottom: #CCC 1px solid; border-right: #CCC 1px solid; width: 100%; } .child li a { color: #000000; } ul { list-style: none; margin: 0; padding: 0px; min-width: 10em; } ul ul ul { right: 100%; top: 0; margin-left: 1px; } li:hover { background-color: darkgray; } .parent li:hover { background-color: darkgray; } .page-item.first { margin-top:0px !important;}");
